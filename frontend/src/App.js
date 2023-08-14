@@ -1,21 +1,26 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayout from "./pages/RootLayout";
 import HomePage from "./pages/Home";
-import Events,{ loader as EventLoader } from "./pages/Events";
-import EventDetailPage from "./pages/EventDetail";
+import Events, { loader as EventLoader } from "./pages/Events";
+import EventDetailPage, {
+  loader as EventDetailLoader,
+  action as EventDeleteAction,
+} from "./pages/EventDetail";
 import NewEvent from "./pages/NewEvent";
+import { action as FormAction } from "./components/EventForm";
 import EditEvent from "./pages/EditEvent";
 import EventRootLayout from "./pages/EventRootLayout";
 import ErrorPage from "./pages/Error";
+import NewsletterPage, { action as newsletterAction } from "./pages/Newsletter";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-    errorElement:<ErrorPage/>,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
-      {
+      { 
         path: "events",
         element: <EventRootLayout />,
         children: [
@@ -24,10 +29,26 @@ const router = createBrowserRouter([
             element: <Events />,
             loader: EventLoader,
           },
-          { path: ":eventid", element: <EventDetailPage /> },
-          { path: "new", element: <NewEvent /> },
-          { path: ":eventid/edit", element: <EditEvent /> },
+          {
+            path: ":eventid",
+            id: "event-details",
+            loader: EventDetailLoader,
+            children: [
+              {
+                index: true,
+                element: <EventDetailPage />,
+                action: EventDeleteAction,
+              },
+              { path: "edit", element: <EditEvent />, action: FormAction },
+            ],
+          },
+          { path: "new", element: <NewEvent />, action: FormAction },
         ],
+      },
+      {
+        path: "newsletter",
+        element: <NewsletterPage />,
+        action: newsletterAction,
       },
     ],
   },

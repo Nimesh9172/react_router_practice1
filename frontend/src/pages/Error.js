@@ -8,7 +8,6 @@ const ErrorPage = () => {
 
   let title = "An Error Occured";
   let message = "Something Went Wrong!";
-
   if (error.status === 500) {
     message = error.data.message;
   }
